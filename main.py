@@ -1,10 +1,10 @@
 import numpy as np
 from numba import jit, vectorize, complex64, int16
 
-COLOR_GREEN = (106, 123, 106)
-COLOR_RED = (123, 106, 106)
+COLOR_GOLDEN = (251, 195, 20)
+COLOR_RED = (251, 79, 20)
 
-GRID_DEF = 2 ** 11
+GRID_DEF = 2 ** 10
 MAX_ITER = 200
 MAX_HEIGHT = 0.1
 
@@ -42,7 +42,7 @@ def print_dimensions(file):
 
 def print_vertices(grid, output, file):
     for compl, out in zip(np.ravel(grid), np.ravel(output)):
-        print(f"{np.real(compl)} {np.imag(compl)} {np.sin(out / MAX_ITER * MAX_HEIGHT * np.pi/2)}", file=file)
+        print(f"{np.real(compl)} {np.imag(compl)} {out / MAX_ITER * MAX_HEIGHT}", file=file)
 
 def avg_height(output, vertices):
     return np.mean([output[i] for i in vertices])
@@ -53,7 +53,7 @@ def print_side(output, vertices, file):
     avg_h = avg_height(output, vertices)
     factor = 1 - (avg_h / MAX_ITER)
     color = (int(c1*factor + c2*(1-factor))
-             for c1, c2 in zip(COLOR_GREEN, COLOR_RED))
+             for c1, c2 in zip(COLOR_GOLDEN, COLOR_RED))
 
     print(*color, file=file)
 
@@ -70,9 +70,9 @@ def main():
     grid = init_grid(GRID_DEF)
     output = iterate(grid)
 
-    with open("out1.off", "w") as f:
+    with open("out.off", "w") as f:
         print("OFF", file=f)
-        print_dimensions(grid, f)
+        print_dimensions(f)
         print_vertices(grid, output, f)
         print_all_sides(output, f)
 
